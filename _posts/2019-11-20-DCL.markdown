@@ -1,0 +1,90 @@
+---
+layout: post
+title:  "细粒度识别论文阅读《Destruction and Construction Learning for Fine-grained Image Recognition》"
+date:   2019-11-20 21:15:48 +0000
+categories: jekyll update
+---
+
+
+## **任务**
+
+
+细粒度识别，弱监督信息下识别子类分类问题，例如分辨不同鸟、车、飞机。  
+
+---
+
+## **出发点**
+
+图像的分类信息包括纹理、大小和形状。在子类的分类中，各个类别的形状、大小往往具有一致性，而神经网络往往在分类时往往过分注重了shape这个因素**此处存疑**。
+该论文从破坏图像形状出发，期望网络能够学习到小区域的纹理，从而将区分细粒度类别。
+
+---
+
+## **难点**
+
+1. 如何破坏形状？
+2. 如何克服破坏形状带来负面影响？  
+<!-- 3. 如何？ -->
+
+---
+## **方法**
+
+**网络总览：**
+1. 使用RCM机制打乱原图，生成乱图。
+2. 原图和乱图按照比例送入到Resnet网络
+3. 使用类别label分类
+4. 使用Adversarial Learning 和 Construction Learning 网络，以及乱图的标签（是否被打乱，打乱的顺序），以求减弱RCM的负面影响，强化resnet的特征提取。
+
+
+<figure>
+<a><img src="{{site.url}}/assert/dcl.png"></a>
+</figure>
+<!-- As an analogy [15] to natural language processing, shuffling
+words in a sentence would force the neural network to focus
+on discriminative words and neglect irrelevant ones. Similarly, if local regions in an image are “shuffled”, the neural
+network would be forced to learn from discriminative region details for classification. -->
+
+### **Region Confusion Mechanism**
+
+<!-- ![navigate](assert/navigate.png) -->
+
+<figure>
+<a><img src="{{site.url}}/assert/rcm.png"></a>
+</figure>
+
+如图中所示，作者借鉴NLP中的打乱机制，设计了Region Confusion Mechanism（RCM）区域打乱机制，使得图像分为多个图像块，块与块之间做随机位置变换，
+从而达到纹理特征保留，总体形状被破坏的效果。
+
+
+### **Adversarial Learning**
+
+为了消除形状破坏的负面影响，该论文使用了多任务机制，与分类网络并行了一个判别网络。
+该判别网络利用CNN提取到的feature去判断图像是否有遭到RCM处理。
+
+Adversarial Learning 网络的存在，使得CNN网络在提取特征时倾向于使得图像块之间的特征具有差异性，即会倾向于利用块内的特征，而减少跨块的特征的使用，
+从而能够减弱形状破坏带来的可能负面影响。
+
+### **Construction Learning**
+
+以图像块打乱的顺序为标签，该子网络试图从CNN特征捕获到打乱规律，以求进一步减弱乱序带来的负面影响。
+
+
+
+### **loss设计**
+
+1. 类别交叉熵
+2. 乱图标签的二分类交叉熵
+3. 乱序规律与预测规律的L1距离（向量之间的L1距离）
+
+## **RESULT**
+
+<!-- ![result](assert/result.png) -->
+
+<figure>
+<a><img src="{{site.url}}/assert/dclresult.png"></a>
+</figure>
+
+---
+---
+
+[原文链接《Destruction and Construction Learning for Fine-grained Image Recognition》](http://openaccess.thecvf.com/content_CVPR_2019/papers/Chen_Destruction_and_Construction_Learning_for_Fine-Grained_Image_Recognition_CVPR_2019_paper.pdf)
