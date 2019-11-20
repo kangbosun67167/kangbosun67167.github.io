@@ -21,7 +21,7 @@ categories: jekyll update
 
 这部分真的是在代码测试是卡了我很长时间，也怪自己太菜了，哈哈。源码中是对pcm文件读取的，读取数据格式为32位浮点型，但一般PCM文件数据存储为8、16、32位整型数，用浮点型读取的话会出现错误，程序结果为一片空白。所以读取文件时一定要注意文件的数据格式。关于pcm与wav格式说明可以参考以下链接。
 
-pcm与wav格式说明 https://www.cnblogs.com/cheney23reg/archive/2010/08/08/1795067.html
+    pcm与wav格式说明 https://www.cnblogs.com/cheney23reg/archive/2010/08/08/1795067.html
 
 3、精简后的代码和测试音频资料
 
