@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>孙康博的个人博客 Blog of SUN Kangbo</title>
+    <title>孙康博 SUN Kangbo</title>
     <description>本博客用于个人搬砖过程中的个人想法梳理，同时锻炼写作能力，使用中英文两种语言描述。
 </description>
     <link>https://myblog.dogson.cn/</link>
     <atom:link href="https://myblog.dogson.cn/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 20 Nov 2019 02:51:33 +0000</pubDate>
-    <lastBuildDate>Wed, 20 Nov 2019 02:51:33 +0000</lastBuildDate>
+    <pubDate>Wed, 20 Nov 2019 13:08:45 +0000</pubDate>
+    <lastBuildDate>Wed, 20 Nov 2019 13:08:45 +0000</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
@@ -23,9 +23,9 @@ My name is SUN Kangbo, a Phd student in SJTU.
 This is my first time to write blog.
 I will write my thinkings in my study to improve my writting skill.&lt;/p&gt;
 </description>
-        <pubDate>Tue, 19 Nov 2019 14:22:48 +0000</pubDate>
-        <link>https://myblog.dogson.cn/jekyll/update/2019/11/19/Start.html</link>
-        <guid isPermaLink="true">https://myblog.dogson.cn/jekyll/update/2019/11/19/Start.html</guid>
+        <pubDate>Wed, 20 Nov 2019 11:05:48 +0000</pubDate>
+        <link>https://myblog.dogson.cn/jekyll/update/2019/11/20/Start.html</link>
+        <guid isPermaLink="true">https://myblog.dogson.cn/jekyll/update/2019/11/20/Start.html</guid>
         
         
         <category>jekyll</category>
