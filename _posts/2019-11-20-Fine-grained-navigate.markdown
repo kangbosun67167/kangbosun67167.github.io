@@ -47,12 +47,21 @@ categories: jekyll update
 
 ### **Teacher网络**
 
+<figure>
+<a><img src="{{site.url}}/assert/train.png"></a>
+</figure>
+
 该网络针对原图的CNN特征进行评分，评出对应anchor的分数（由于RPN网络的提取框是有规律的，所以Teacher可以从CNN特征去拟合这些分数），
 使用非最大值抑制（NMS）的方法挑选出最高的几张anchor，这些anchor的位置信息会送入到Navigate网络中进行截取相应的区域。
 
 ### **Scrutinizer网络**
 
 该网络将原图和其他区域图的特征拼接起来进行最后的分类。
+
+<figure>
+<a><img src="{{site.url}}/assert/inference.png"></a>
+</figure>
+
 
 ### **loss设计**
 
