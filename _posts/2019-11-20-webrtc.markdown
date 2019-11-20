@@ -1,0 +1,509 @@
+---
+layout: post
+title:  "Webrtc 之回声消除"
+date:   2019-11-20 15:43:48 +0000
+categories: jekyll update
+---
+
+这两周一直在学习关于回声消除的原理和知识，在了解其他人博客知识后，对开源源码webrtc中的fullaec.m文件进行了阅读学习，前两天终于实现了预想的消除效果，但现在对其代码中一些关键参数的设置方法不太理解，还需要细细研究。不管怎么样，在回声消除的学习上总算是出了些结果，下面将对自己学习过程中的一些问题进行总结，最后贴出精简过的matlab代码及测试音频，这里的精简只是删除算法未使用到的一些变量和语句，方便像我这种刚入门的小白理解。
+
+        1、webrtc回声消除原理部分
+
+        关于回声消除的原理，建议大家可以看看下面链接的内容，该博主不仅对回声消除的原理进行了分析，还对源码进行了详细的解读，很大程度上帮助了我了解各部分代码的作用，对于通读理解代码有很大的帮助，感谢这位无私分享的博主，不然我可能还在原理上面苦苦挣扎。
+
+            http://blog.csdn.net/shichaog/article/details/71152743
+
+        除此之外，另外一位博主对fullaec.m进行流程图分析，对于理解代码结构有很大的帮助。
+
+            http://blog.csdn.net/ruichen198706/article/details/8287240
+
+        2、数据读入
+
+        这部分真的是在代码测试是卡了我很长时间，也怪自己太菜了，哈哈。源码中是对pcm文件读取的，读取数据格式为32位浮点型，但一般PCM文件数据存储为8、16、32位整型数，用浮点型读取的话会出现错误，程序结果为一片空白。所以读取文件时一定要注意文件的数据格式。关于pcm与wav格式说明可以参考以下链接。
+
+        pcm与wav格式说明 https://www.cnblogs.com/cheney23reg/archive/2010/08/08/1795067.html
+
+        3、精简后的代码和测试音频资料
+
+% Partitioned block frequency domain adaptive filtering NLMS and
+% standard time-domain sample-based NLMS
+ 
+ 
+ 
+ 
+[ssin,fs1]=audioread('near.wav','native');
+[rrin,fs2]=audioread('far.wav','native');
+ssin=double(ssin);
+rrin=double(rrin);
+ 
+ 
+fs=8000;
+mult=fs/8000;%%使用理论未知
+ 
+ 
+ 
+ 
+ 
+ 
+% Flags
+NLPon=1; % NLP on
+ 
+ 
+M = 16; % Number of partitions
+N = 64; % Partition length
+L = M*N; % Filter length
+if fs == 8000
+    mufb = 0.6;
+else
+    mufb = 0.8;%%步长，位置其值如何设置
+end
+ 
+ 
+alp = 0.15; % Power estimation factor 
+alc = 0.1; % Coherence estimation factor
+ 
+ 
+%% Changed a little %%
+ 
+ 
+%%
+if fs == 8000
+    threshold=2e-6; % DTrob threshold
+else
+    %threshold=0.7e-6;
+    threshold=1.5e-6; %%门限
+end
+ 
+ 
+if fs == 8000
+    echoBandRange = ceil(300*2/fs*N):floor(1800*2/fs*N);
+else
+    echoBandRange = ceil(60*2/fs*N):floor(1500*2/fs*N);%%回声频谱范围
+end
+suppState = 1;%%回声抑制标志
+ 
+ 
+ 
+ 
+len=length(ssin);
+WFb=zeros(N+1,M); % Block-based FD(frequency domain) NLMS
+YFb=zeros(N+1,M);
+erfb=zeros(len,1);
+ercn=zeros(len,1);%%回声消除后的结果
+zm=zeros(N,1);
+XFm=zeros(N+1,M);
+YFm=zeros(N+1,M);
+pn0=10*ones(N+1,1);
+pn=zeros(N+1,1);
+NN=len;
+Nb=floor(NN/N)-M;
+ 
+ 
+ 
+ 
+start=1;
+xo=zeros(N,1);
+do=xo;
+eo=xo;
+ 
+ 
+cohxdAvg=zeros(Nb+1,1);%%程序中有用到，不知什么意思
+cohxdSlow=zeros(Nb+1,N+1);%%算法中未使用
+cohedSlow=zeros(Nb+1,N+1);%%同上
+ 
+ 
+ 
+ 
+ 
+ 
+cohedAvg=zeros(Nb+1,1);%%算法未使用，貌似用来记录ed相关性
+ 
+ 
+hnledAvg=zeros(Nb+1,1);
+hnlxdAvg=zeros(Nb+1,1);
+ovrdV=zeros(Nb+1,1);
+dIdxV=zeros(Nb+1,1);
+hnlSortQV=zeros(Nb+1,1);
+hnlPrefAvgV=zeros(Nb+1,1);
+hnled = zeros(N+1, 1);
+weight=zeros(N+1,1);
+hnl = zeros(N+1, 1);
+xfwm=zeros(N+1,M);
+dfm=zeros(N+1,M);
+WFbD=ones(N+1,1);
+hnlLocalMin = 1;
+cohxdLocalMin = 1;
+hnlLocalMinV=zeros(Nb+1,1);
+cohxdLocalMinV=zeros(Nb+1,1);
+hnlMinV=zeros(Nb+1,1);
+dkEnV=zeros(Nb+1,1);
+ekEnV=zeros(Nb+1,1);
+ovrd = 2;
+ovrdSm = 2;
+hnlMin = 1;
+dIdx = 1;
+ 
+ 
+ 
+ 
+divergeState = 0;
+ 
+ 
+ 
+ 
+Sym=1e7*ones(N+1,1);
+ 
+ 
+wins=[0;sqrt(hanning(2*N-1))];
+mbuf=zeros(2*N,1);
+ 
+ 
+ 
+ 
+cohxd = zeros(N+1,1);
+Se = zeros(N+1,1);
+Sd = zeros(N+1,1);
+Sx = zeros(N+1,1);
+ 
+ 
+Sed = zeros(N+1,1);
+Sxd = zeros(N+1,1);
+ 
+ 
+ 
+ 
+hh=waitbar(0,'Please wait...');
+%%变量初始化
+ 
+ 
+for kk=1:Nb     %%循环每一帧，每帧64点
+    pos = N * (kk-1) + start;%%位置记录
+ 
+ 
+    % FD block method
+    % ---------------------- Organize data
+ 
+ 
+    %far is speaker played music
+    xk = rrin(pos:pos+N-1);     %%远处声源64点数据
+    %near is micphone captured signal
+    dk = ssin(pos:pos+N-1);       %%近处麦克风捕捉64点数据
+ 
+ 
+    %----------------------- far end signal process
+    xx = [xo;xk];     %%xo为上帧远端数据，初始为64*1的零向量
+    xo = xk;
+    tmp = fft(xx);
+    XX = tmp(1:N+1);
+ 
+ 
+    dd = [do;dk]; % Overlap %%do为上帧远端数据，初始为64*1的零向量，
+    do = dk;
+    tmp = fft(dd); % Frequency domain
+    DD = tmp(1:N+1);%%对xx及dd进行FFT变换，xx的频谱用于计算xx的功率，用于NLMS公式
+ 
+ 
+    % ------------------------far end Power estimation
+    pn0 = (1 - alp) * pn0 + alp * real(XX.* conj(XX));
+    pn = pn0;%%XX功率计算
+ 
+ 
+ 
+ 
+    % ---------------------- Filtering
+    XFm(:,1) = XX;%%XFm为65*16矩阵，存储XX的频谱，用于计算回声估计，2-16列为前15帧数据
+    YFb = XFm .* WFb;
+    %%YFb为回声信号频谱
+    yfk = sum(YFb,2);%%将YFb按行求和，得到65*1的矩阵
+    tmp = [yfk ; flipud(conj(yfk(2:N)))];
+    ykt = real(ifft(tmp));
+    ykfb = ykt(end-N+1:end);%%得到回声信号时域，为64*1矩阵
+ 
+ 
+    % ---------------------- Error estimation
+    ekfb = dk - ykfb;%%时域误差信号
+  
+   
+    erfb(pos:pos+N-1) = ekfb;%%误差信号保存，作图使用
+    tmp = fft([zm;ekfb]); % FD version for cancelling part (overlap-save)
+    Ek = tmp(1:N+1);%%得到误差信号频谱，65*1矩阵
+ 
+ 
+    % ------------------------ Adaptation
+ 
+ 
+    Ek2 = Ek ./(pn + 0.001); % Normalized error%%归一化误差信号
+ 
+ 
+    absEf = max(abs(Ek2), threshold);%%为65*1矩阵，每一点最小为门限
+    absEf = ones(N+1,1)*threshold./absEf;
+    Ek2 = Ek2.*absEf;%%对误差频谱进行门限限制，使之最大为门限值
+ 
+ 
+    mEk = mufb.*Ek2;
+    PP = conj(XFm).*(ones(M,1) * mEk')';%%系数调节大小，误差*步长*参考信号，为系数频谱
+ 
+ 
+    WFb = WFb + PP;%%更新权重
+ 
+ 
+ 
+ 
+        WFbEn = sum(real(WFb.*conj(WFb)));
+       
+        [tmp, dIdx] = max(WFbEn);%%存储16块中权重最大的位置及大小
+ 
+ 
+        WFbD = sum(abs(WFb(:, dIdx)),2);%%未使用
+        
+        WFbD = min(max(WFbD, 0.5), 4);%%未使用
+ 
+ 
+    dIdxV(kk) = dIdx;%%记录每次最大块位置，算法未使用
+ 
+ 
+    % NLP %%非线性过程，重点部分
+    if (NLPon)  
+        ee = [eo;ekfb];%%重叠分段FFT处理，为了与XX,DD相匹配以计算相关性等
+        eo = ekfb;
+        window = wins;
+        if fs == 8000
+            gamma = 0.9;
+        else
+        gamma = 0.93;
+        end
+ 
+ 
+        tmp = fft(xx.*window);%%xx为远端信号
+        xf = tmp(1:N+1);
+        tmp = fft(dd.*window);%%dd为近端mic捕捉信号
+        df = tmp(1:N+1);
+        tmp = fft(ee.*window);%%ee为估计的近端声源信号
+        ef = tmp(1:N+1);%%对EE,XX,DD加窗进行FFT变换，加窗为了防止频谱泄露
+ 
+ 
+        xfwm(:,1) = xf;%%将本次XF的数据传入XFWM，其2-16为前15帧数据，为65*16矩阵
+        xf = xfwm(:,dIdx);%%得到最大能量列，认为其为本次处理的远端参考信号
+       
+        dfm(:,1) = df;%%近端mic捕捉信号
+ 
+ 
+        SxOld = Sx;%%算法未使用，可屏蔽
+ 
+ 
+        Se = gamma*Se + (1-gamma)*real(ef.*conj(ef));
+        Sd = gamma*Sd + (1-gamma)*real(df.*conj(df));
+        Sx = gamma*Sx + (1-gamma)*real(xf.*conj(xf));%%计算xf,df,ef的功率谱密度，与上次结果平滑
+ 
+ 
+ 
+ 
+        
+ 
+ 
+ 
+ 
+        % coherence
+        Sxd = gamma*Sxd + (1-gamma)*xf.*conj(df);
+        Sed = gamma*Sed + (1-gamma)*ef.*conj(df);%%计算相关功率谱密度，与上次结果平滑
+ 
+ 
+ 
+ 
+        cohed = real(Sed.*conj(Sed))./(Se.*Sd + 1e-10);%%误差和近端信号相关性
+        cohedAvg(kk) = mean(cohed(echoBandRange));
+      
+        cohxd = real(Sxd.*conj(Sxd))./(Sx.*Sd + 1e-10);%%远端与近端信号相关性
+         
+ 
+ 
+        cohxdAvg(kk) = mean(cohxd(echoBandRange));%%！！！到这里到这里不懂是用来干啥的
+     
+     
+ 
+ 
+        hnled = min(1 - cohxd, cohed);%%此处为了最大化回声抑制，二者均是相关性愈大，回声越小
+        [hnlSort2, hnlSortIdx2] = sort(hnled(echoBandRange));
+         
+        cohedMean = mean(cohed(echoBandRange));%%计算所选点均值
+        NcodxdMean = mean(1 - cohxd(echoBandRange));%%选点均值
+         
+        hnlQuant = 0.75;
+        hnlQuantLow = 0.5;
+        qIdx = floor(hnlQuant*length(hnlSort2));
+        qIdxLow = floor(hnlQuantLow*length(hnlSort2));
+        hnlPrefAvg = hnlSort2(qIdx);
+        hnlPrefAvgLow = hnlSort2(qIdxLow);
+       
+ 
+ 
+            if cohedMean > 0.98 && NcodxdMean > 0.9
+                
+                suppState = 0;
+            elseif cohedMean < 0.95 || NcodxdMean < 0.8
+                
+                suppState = 1;
+            end%%条件一下回声小，条件二下回声大，做抑制，其他情况不做处理
+ 
+ 
+            if NcodxdMean < cohxdLocalMin && NcodxdMean < 0.75
+                cohxdLocalMin = NcodxdMean;%%cohxdlocalmin，满足条件时赋值
+            end
+ 
+ 
+            if cohxdLocalMin == 1%%此处表示未能更新coxdlocalmin，回声较小
+                ovrd = 3;
+                hnled = 1-cohxd;
+                hnlPrefAvg = NcodxdMean;
+                hnlPrefAvgLow = NcodxdMean;
+            end
+ 
+ 
+            if suppState == 0%%不需要回声消除，为hnled，hnlprefavg等赋值
+                hnled = cohed;
+                hnlPrefAvg = cohedMean;
+                hnlPrefAvgLow = cohedMean;
+            end
+ 
+ 
+          
+            if hnlPrefAvgLow < hnlLocalMin && hnlPrefAvgLow < 0.6
+                 
+                hnlLocalMin = hnlPrefAvgLow;
+                hnlMin = hnlPrefAvgLow;
+                ovrd = max(log(0.00000001)/(log(hnlMin + 1e-10) + 1e-10), 5);%%不懂更新规则，不知该值作用
+              
+            end
+            hnlLocalMin = min(hnlLocalMin + 0.0008/mult, 1);%%更新的意义不懂
+            cohxdLocalMin = min(cohxdLocalMin + 0.0004/mult, 1);
+   
+ 
+ 
+ 
+ 
+    
+ 
+ 
+            if ovrd < ovrdSm
+                ovrdSm = 0.99*ovrdSm + 0.01*ovrd;
+            else
+                ovrdSm = 0.9*ovrdSm + 0.1*ovrd;
+            end
+  
+        ekEn = sum(Se);
+        dkEn = sum(Sd);
+ 
+ 
+        if divergeState == 0%%用于发散处理
+            if ekEn > dkEn
+                ef = df;
+                divergeState = 1;
+              
+            end
+        else
+           
+            if ekEn*1.05 < dkEn
+                divergeState = 0;
+            else
+                ef = df;
+            end
+        end
+ 
+ 
+        if ekEn > dkEn*19.95%%异常，重置系数矩阵
+            WFb=zeros(N+1,M); % Block-based FD NLMS
+        end
+ 
+ 
+        ekEnV(kk) = ekEn;
+        dkEnV(kk) = dkEn;
+ 
+ 
+        hnlLocalMinV(kk) = hnlLocalMin;
+        cohxdLocalMinV(kk) = cohxdLocalMin;
+        hnlMinV(kk) = hnlMin;
+      
+        %%平滑滤波器系数及抑制指数
+        aggrFact = 0.3;
+        wCurve = [0; aggrFact*sqrt(linspace(0,1,N))' + 0.1];
+       
+        weight = wCurve;
+ 
+ 
+ 
+ 
+        hnled = weight.*min(hnlPrefAvg, hnled) + (1 - weight).*hnled;
+ 
+ 
+   
+ 
+ 
+        od = ovrdSm*(sqrt(linspace(0,1,N+1))' + 1);
+         
+ 
+ 
+        hnled = hnled.^(od.*ones(N+1,1));
+ 
+ 
+     
+        hnl = hnled;
+       
+        ef = ef.*(hnl);
+ 
+ 
+ 
+ 
+        ovrdV(kk) = ovrdSm;
+        
+        hnledAvg(kk) = 1-mean(1-cohed(echoBandRange));
+        hnlxdAvg(kk) = 1-mean(cohxd(echoBandRange));
+       
+        hnlSortQV(kk) = hnlPrefAvgLow;
+        hnlPrefAvgV(kk) = hnlPrefAvg;
+        
+ 
+ 
+ 
+ 
+    % Overlap and add in time domain for smoothness
+    tmp = [Fmix ; flipud(conj(Fmix(2:N)))];
+    mixw = wins.*real(ifft(tmp));%%加窗，防止频谱泄露
+    mola = mbuf(end-N+1:end) + mixw(1:N);%%重叠分段FFT处理后，时域的运算
+    mbuf = mixw;
+    ercn(pos:pos+N-1) = mola;%%%%%-------------you can hear the effect by sound(10*ercn,16000),add by Shichaog
+    end % NLPon
+ 
+ 
+    
+ 
+ 
+   
+ 
+ 
+ 
+ 
+% Shift old FFTs
+    XFm(:,2:end) = XFm(:,1:end-1);
+    YFm(:,2:end) = YFm(:,1:end-1);
+    xfwm(:,2:end) = xfwm(:,1:end-1);
+    dfm(:,2:end) = dfm(:,1:end-1);
+ 
+ 
+end
+ 
+ 
+ 
+ 
+ 
+ 
+figure;
+subplot(311);
+plot(ssin);
+subplot(312);
+plot(rrin);
+subplot(313);
+plot(ercn);
+audiowrite('near.wav',int16(ssin),8000);
+audiowrite('far.wav',int16(rrin),8000);
+audiowrite('source.wav',int16(ercn),8000);;
+
