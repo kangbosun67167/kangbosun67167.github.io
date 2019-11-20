@@ -11,8 +11,8 @@ email: kangbosun67167@gmail.com
 description: > # this means to ignore newlines until "baseurl:"
   本博客用于个人搬砖过程中的个人想法梳理，同时锻炼写作能力，使用中英文两种语言描述。
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "http://myblog.dogson.cn" # the base hostname & protocol for your site
-# twitter_username: kangbosun67167
+url: "https://myblog.dogson.cn" # the base hostname & protocol for your site
+twitter_username: KangboSun1996
 github_username:  kangbosun67167
 
 # Build settings
