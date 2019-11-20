@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "中文环境测试s"
+title:  "启航！ Start!"
 date:   2019-11-19 14:22:48 +0000
 categories: jekyll update
 ---
@@ -10,3 +10,8 @@ categories: jekyll update
 https://zhuanlan.zhihu.com/p/58229299
 
 我将在此记录个人的一些搬砖中的一些思考和过程，希望自己能够在此锻炼自己的写作能力以及科研思维。
+
+Hi, everybody!
+My name is SUN Kangbo, a Phd student in SJTU.
+This is my first time to write blog.
+I will write my thinkings in my study to improve my writting skill.
