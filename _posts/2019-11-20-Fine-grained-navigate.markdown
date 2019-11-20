@@ -82,6 +82,8 @@ Scrutinizer网络的决策loss。
 
 将置信度list作为信息量list的标签，损失函数使用排序学习中的rank_loss。
 
+---
+
 ## **RESULT**
 
 <!-- ![result](assert/result.png) -->
