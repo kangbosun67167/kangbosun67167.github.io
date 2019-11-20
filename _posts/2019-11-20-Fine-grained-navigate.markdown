@@ -33,7 +33,7 @@ categories: jekyll update
 
 ### **Navigate网络**
 
-![这是张图片](assert/navigate.png)
+![navigate](assert/navigate.png)
 
 该网络的输入为原图的CNN特征和N个最大信息目标区域，输出为N个缩放后的区域图。  
 
@@ -69,6 +69,9 @@ Scrutinizer网络的决策loss。
 
 将置信度list作为信息量list的标签，损失函数使用排序学习中的rank_loss。
 
+## **RESULT**
+
+![result](assert/result.png)
 
 ---
 
