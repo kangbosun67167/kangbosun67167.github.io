@@ -33,7 +33,7 @@ categories: jekyll update
 
 ### **Navigate网络**
 
-![这是张图片](../assert/navigate.png)
+![这是张图片](assert/navigate.png)
 
 该网络的输入为原图的CNN特征和N个最大信息目标区域，输出为N个缩放后的区域图。  
 
