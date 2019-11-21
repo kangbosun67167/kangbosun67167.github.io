@@ -64,9 +64,12 @@ network would be forced to learn from discriminative region details for classifi
 **Attention Sampling**
 
 网络设计的重点部分，通过原图和attention map生成局部放大的图。
-（这部分可参考其代码实现）。
+（这部分可参考其代码实现）。 
 
+目前个人理解的做法，网络对特征图进行x和y轴的最大值pooling，以某种方法选出最大的相应点，
+通过采样操作放大相应区域（到底是怎么做得？还是不太完全明白）。从而生成相应的重建的图像。
 
+*很重要的部分需要好好学习和思考，针对源码学习效果会更好些*
 
 **loss设计**
 
