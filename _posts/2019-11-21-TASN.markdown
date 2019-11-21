@@ -57,29 +57,20 @@ network would be forced to learn from discriminative region details for classifi
 原图经过resnet18提取特征后，对 C X H X W 维度大小的特征进行三线性注意力提取。
 等同于双线性处理后再右乘一次特征，最后出的的特征维度仍然为 C X H X W 。
 
-![](http://latex.codecogs.com/gif.latex?\\a=\frac{1}{1+sin(x)})
+<!-- ![](http://latex.codecogs.com/gif.latex?\\a=\frac{1}{1+sin(x)}) -->
 
 
 
-**Adversarial Learning**
+**Attention Sampling**
 
-为了消除形状破坏的负面影响，该论文使用了多任务机制，与分类网络并行了一个判别网络。
-该判别网络利用CNN提取到的feature去判断图像是否有遭到RCM处理。
-
-Adversarial Learning 网络的存在，使得CNN网络在提取特征时倾向于使得图像块之间的特征具有差异性，即会倾向于利用块内的特征，而减少跨块的特征的使用，
-从而能够减弱形状破坏带来的可能负面影响。
-
-**Construction Learning**
-
-以图像块打乱的顺序为标签，该子网络试图从CNN特征捕获到打乱规律，以求进一步减弱乱序带来的负面影响。
+网络设计的重点部分，通过原图和attention map生成局部放大的图。
+（这部分可参考其代码实现）。
 
 
 
 **loss设计**
 
-1. 类别交叉熵
-2. 乱图标签的二分类交叉熵
-3. 乱序规律与预测规律的L1距离（向量之间的L1距离）
+part网络的的fc输出经过带T的‘softmax’激活作为master的一个标签（用作知识蒸馏）。最后master网络同时使用类别交叉熵和与part网络输出的交叉熵，part网络使用类别交叉熵训练。
 
 ---
 ## **RESULT**
@@ -87,10 +78,10 @@ Adversarial Learning 网络的存在，使得CNN网络在提取特征时倾向�
 <!-- ![result](assert/result.png) -->
 
 <figure>
-<a><img src="{{site.url}}/assert/dclresult.png"></a>
+<a><img src="{{site.url}}/assert/tasn_result.png"></a>
 </figure>
 
 ---
 ---
 
-[原文链接《Destruction and Construction Learning for Fine-grained Image Recognition》](http://openaccess.thecvf.com/content_CVPR_2019/papers/Chen_Destruction_and_Construction_Learning_for_Fine-Grained_Image_Recognition_CVPR_2019_paper.pdf)
+[原文链接《Learning Trilinear Attention SamplingNetwork for Fine-grained Image Recognition》](http://openaccess.thecvf.com/content_CVPR_2019/papers/Zheng_Looking_for_the_Devil_in_the_Details_Learning_Trilinear_Attention_CVPR_2019_paper.pdf)
