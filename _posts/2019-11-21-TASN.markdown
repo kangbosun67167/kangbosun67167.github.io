@@ -54,8 +54,8 @@ network would be forced to learn from discriminative region details for classifi
 <a><img src="{{site.url}}/assert/trilinearattention.png"></a>
 </figure>
 
-原图经过resnet18提取特征后，对 C X H X W 维度大小的特征进行三线性注意力提取。
-等同于双线性处理后再右乘一次特征，最后出的的特征维度仍然为 C X H X W 。
+原图经过resnet18提取特征后，对 C * H * W 维度大小的特征进行三线性注意力提取。
+等同于双线性处理后再右乘一次特征，最后出的的特征维度仍然为 C * H * W 。
 
 <!-- ![](http://latex.codecogs.com/gif.latex?\\a=\frac{1}{1+sin(x)}) -->
 
