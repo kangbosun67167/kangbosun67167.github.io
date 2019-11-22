@@ -39,6 +39,7 @@ categories: jekyll update
 <figure>
 <a><img src="{{site.url}}/assert/dcl.png"></a>
 </figure>
+
 <!-- As an analogy [15] to natural language processing, shuffling
 words in a sentence would force the neural network to focus
 on discriminative words and neglect irrelevant ones. Similarly, if local regions in an image are “shuffled”, the neural
