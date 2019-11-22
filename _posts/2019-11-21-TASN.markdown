@@ -14,13 +14,13 @@ mathjax_autoNumber: true
 
 细粒度识别，弱监督信息下识别子类分类问题，例如分辨不同鸟、车、飞机。  
 
----
+
 
 ## **出发点**
 
 细粒度的识别难点在于网络很难从一个固定分辨率大小的图中自适应的找到合适分类的纹理特征，该论文通过放大图像中的纹理特征以期望获得网络的关注（在分类上更有权重）。
 
----
+
 
 ## **难点**
 
@@ -29,7 +29,7 @@ mathjax_autoNumber: true
 3. 如何利用这个局部放大的图像？  
 <!-- 3. 如何？ -->
 
----
+
 ## **方法**
 
 **网络总览：**
@@ -83,7 +83,7 @@ $$a=\frac{1}{1+sin(x)}$$
 <a><img src="{{site.url}}/assert/tasn_ab.png"></a>
 </figure>
 
-<img class="image image--lg" src="{{site.url}}/assert/tasn_ab.png"/>
+<!-- <img class="image image--lg" src="{{site.url}}/assert/tasn_ab.png"/> -->
 
 **loss设计**
 
@@ -91,7 +91,7 @@ part网络的的fc输出经过带T的‘softmax’激活作为master的一个标
 
 最后master网络同时使用类别交叉熵和与part网络输出的交叉熵，part网络使用类别交叉熵训练。
 
----
+
 ## **RESULT**
 
 <!-- ![result](assert/result.png) -->
@@ -100,7 +100,6 @@ part网络的的fc输出经过带T的‘softmax’激活作为master的一个标
 <a><img src="{{site.url}}/assert/tasn_result.png"></a>
 </figure>
 
----
----
+
 
 [原文链接《Learning Trilinear Attention SamplingNetwork for Fine-grained Image Recognition》](http://openaccess.thecvf.com/content_CVPR_2019/papers/Zheng_Looking_for_the_Devil_in_the_Details_Learning_Trilinear_Attention_CVPR_2019_paper.pdf)

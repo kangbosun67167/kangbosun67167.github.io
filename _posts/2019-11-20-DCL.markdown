@@ -11,14 +11,14 @@ tags: Fine-grained
 
 细粒度识别，弱监督信息下识别子类分类问题，例如分辨不同鸟、车、飞机。  
 
----
+
 
 ## **出发点**
 
 图像的分类信息包括纹理、大小和形状。在子类的分类中，各个类别的形状、大小往往具有一致性，而神经网络往往在分类时往往过分注重了shape这个因素**此处存疑**。
 该论文从破坏图像形状出发，期望网络能够学习到小区域的纹理，从而将区分细粒度类别。
 
----
+
 
 ## **难点**
 
@@ -26,7 +26,7 @@ tags: Fine-grained
 2. 如何克服破坏形状带来负面影响？  
 <!-- 3. 如何？ -->
 
----
+
 ## **方法**
 
 **网络总览：**
@@ -77,7 +77,7 @@ Adversarial Learning 网络的存在，使得CNN网络在提取特征时倾向�
 2. 乱图标签的二分类交叉熵
 3. 乱序规律与预测规律的L1距离（向量之间的L1距离）
 
----
+
 ## **RESULT**
 
 <!-- ![result](assert/result.png) -->
@@ -86,7 +86,5 @@ Adversarial Learning 网络的存在，使得CNN网络在提取特征时倾向�
 <a><img src="{{site.url}}/assert/dclresult.png"></a>
 </figure>
 
----
----
 
 [原文链接《Destruction and Construction Learning for Fine-grained Image Recognition》](http://openaccess.thecvf.com/content_CVPR_2019/papers/Chen_Destruction_and_Construction_Learning_for_Fine-Grained_Image_Recognition_CVPR_2019_paper.pdf)

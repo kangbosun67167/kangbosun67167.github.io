@@ -1,8 +1,8 @@
 ---
-layout: post
+layout: article
 title:  "启航！ Start!"
 date:   2019-11-20 11:05:48 +0000
-categories: jekyll update
+tags: something
 ---
 
 大家好，我是来自SJTU的孙康博，目前是研究生在读，第一次使用GitHub创建个人博客，创建的方式可以参考以下的链接
