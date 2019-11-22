@@ -71,9 +71,20 @@ network would be forced to learn from discriminative region details for classifi
 
 *很重要的部分需要好好学习和思考，针对源码学习效果会更好些*
 
+网络根据特征图上位置激活值，对X轴和Y轴的最大值进行积分操作，形成关于X、Y轴的分布。
+通过该分布形成点阵图，该点阵在变化快的区域更加密集，在变化慢的区域稀疏。从而实现局部采样的效果
+
+
+<figure>
+<a><img src="{{site.url}}/assert/tasn_ab.png"></a>
+</figure>
+
+
 **loss设计**
 
-part网络的的fc输出经过带T的‘softmax’激活作为master的一个标签（用作知识蒸馏）。最后master网络同时使用类别交叉熵和与part网络输出的交叉熵，part网络使用类别交叉熵训练。
+part网络的的fc输出经过带T的‘softmax’激活作为master的一个标签（用作知识蒸馏）。
+
+最后master网络同时使用类别交叉熵和与part网络输出的交叉熵，part网络使用类别交叉熵训练。
 
 ---
 ## **RESULT**
