@@ -1,8 +1,8 @@
 ---
-layout: post
+layout: article
 title:  "细粒度识别论文阅读《Destruction and Construction Learning for Fine-grained Image Recognition》"
 date:   2019-11-20 21:15:48 +0000
-categories: jekyll update
+tags: Fine-grained
 ---
 
 
