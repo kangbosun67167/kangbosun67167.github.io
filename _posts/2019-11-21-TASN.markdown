@@ -79,7 +79,7 @@ network would be forced to learn from discriminative region details for classifi
 <a><img src="{{site.url}}/assert/tasn_ab.png"></a>
 </figure>
 
-<!-- <img class="image image--lg" src=""/> -->
+<img class="image image--lg" src="{{site.url}}/assert/tasn_ab.png"/>
 
 **loss设计**
 

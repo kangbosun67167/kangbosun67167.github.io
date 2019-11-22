@@ -2,7 +2,7 @@
 layout: post
 title:  "细粒度识别论文阅读《Learning to Navigate for Fine-grained Classification》"
 date:   2019-11-20 15:57:48 +0000
-categories: jekyll update
+tags: Fine-grained
 ---
 
 
