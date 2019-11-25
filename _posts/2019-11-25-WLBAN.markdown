@@ -1,0 +1,112 @@
+---
+layout: article
+title:  "细粒度识别论文阅读《Weakly Supervised Bilinear Attention Network for Fine-Grained Visual Classification》"
+date:   2019-11-21 09:53:48 +0000
+tags: Fine-grained
+mathjax: true
+mathjax_autoNumber: true
+---
+
+
+
+## 任务
+
+
+细粒度识别，弱监督信息下识别子类分类问题，例如分辨不同鸟、车、飞机。  
+
+
+
+## 出发点
+
+<!-- 细粒度的识别难点在于网络很难从一个固定分辨率大小的图中自适应的找到合适分类的纹理特征，该论文通过放大图像中的纹理特征以期望获得网络的关注（在分类上更有权重）。 -->
+
+细粒度识别领域常常采用弱监督信息进行目标定位，然而误检和遮挡会导致目标定位发生较大的偏差，一定程度上引起推断的波动性（即学习过程不稳定）和损害准确率的增长。
+作者从attention角度出发，对特征图进行attention量化，实现另一种形式的目标定位，two-stage的方式进一步提取裁剪图片的特征进行联合分类。
+
+
+
+
+
+
+
+## 难点
+
+1. attention图如何产生？
+2. 特征图和attention图搭配使用？
+3. 如何使用attention图进行裁剪？  
+<!-- 3. 如何？ -->
+
+
+## 方法
+
+### 网络总览
+
+1. 原图经过修改后的ResNet18提取特征，经过Trilinear Attention产生与特征同维度的注意力map，
+经过两种采样的方式产生Global和part注意力采样图，分别称之为structure和detail。
+2. structure图被送入到master网络分支进行特征提取和分类，detail图被送入到part网络分支进行特征提取和分类，两个分支共享一个ResNet网络来提取图像特征。
+3. part网络的的fc输出经过带T的‘softmax’激活作为master的一个标签（用作知识蒸馏）。最后master网络同时使用类别交叉熵和与part网络输出的交叉熵，part网络使用类别交叉熵训练。
+
+
+<figure>
+<a><img src="{{site.url}}/assert/tasn_all.png"></a>
+</figure>
+<!-- As an analogy [15] to natural language processing, shuffling
+words in a sentence would force the neural network to focus
+on discriminative words and neglect irrelevant ones. Similarly, if local regions in an image are “shuffled”, the neural
+network would be forced to learn from discriminative region details for classification. -->
+
+**Trilinear Attention**
+
+<!-- ![navigate](assert/navigate.png) -->
+
+<figure>
+<a><img src="{{site.url}}/assert/trilinearattention.png"></a>
+</figure>
+
+原图经过resnet18提取特征后，对 C * H * W 维度大小的特征进行三线性注意力提取。
+等同于双线性处理后再右乘一次特征，最后出的的特征维度仍然为 C * H * W 。
+
+$$a=\frac{1}{1+sin(x)}$$
+
+<!-- ![](http://latex.codecogs.com/gif.latex?\\a=\frac{1}{1+sin(x)}) -->
+
+
+
+**Attention Sampling**
+
+网络设计的重点部分，通过原图和attention map生成局部放大的图。
+（这部分可参考其代码实现）。 
+
+目前个人理解的做法，网络对特征图进行x和y轴的最大值pooling，以某种方法选出最大的相应点，
+通过采样操作放大相应区域（到底是怎么做得？还是不太完全明白）。从而生成相应的重建的图像。
+
+*很重要的部分需要好好学习和思考，针对源码学习效果会更好些*
+
+网络根据特征图上位置激活值，对X轴和Y轴的最大值进行积分操作，形成关于X、Y轴的分布。
+通过该分布形成点阵图，该点阵在变化快的区域更加密集，在变化慢的区域稀疏。从而实现局部采样的效果
+
+
+<figure>
+<a><img src="{{site.url}}/assert/tasn_ab.png"></a>
+</figure>
+
+<!-- <img class="image image--lg" src="{{site.url}}/assert/tasn_ab.png"/> -->
+
+**loss设计**
+
+part网络的的fc输出经过带T的‘softmax’激活作为master的一个标签（用作知识蒸馏）。
+
+最后master网络同时使用类别交叉熵和与part网络输出的交叉熵，part网络使用类别交叉熵训练。
+
+
+## **RESULT**
+
+<!-- ![result](assert/result.png) -->
+
+<figure>
+<a><img src="{{site.url}}/assert/tasn_result.png"></a>
+</figure>
+
+
+
+[原文链接《Learning Trilinear Attention SamplingNetwork for Fine-grained Image Recognition》](http://openaccess.thecvf.com/content_CVPR_2019/papers/Zheng_Looking_for_the_Devil_in_the_Details_Learning_Trilinear_Attention_CVPR_2019_paper.pdf)
