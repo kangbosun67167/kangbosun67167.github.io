@@ -42,7 +42,8 @@ mathjax_autoNumber: true
 ### 网络总览
 
 1. 原图经过InceptionV3特征提取产生特征图，其中使用1*1卷积产生attention图(128维度)，将attention图和特征图进行bilinear汇合，称之为bilinear attention pooling（BAP）。最后进行提取出相应的特征。
-2. attention图进行通道间的平均加权，使用论文[《Learning deep features for discriminative localization》]（https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Zhou_Learning_Deep_Features_CVPR_2016_paper.pdf）
+2. attention图进行通道间的平均加权，使用论文[《Learning deep features for discriminative localization》](https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Zhou_Learning_Deep_Features_CVPR_2016_paper.pdf)
+
 中的方法进行裁剪，得到目标裁剪图。
 3. 裁剪图如1中的过程得到特征，最后与原图特征联合分类。
 
@@ -55,13 +56,11 @@ words in a sentence would force the neural network to focus
 on discriminative words and neglect irrelevant ones. Similarly, if local regions in an image are “shuffled”, the neural
 network would be forced to learn from discriminative region details for classification. -->
 
-**Trilinear Attention**
+**Bilinear Attention Pooling**
 
 <!-- ![navigate](assert/navigate.png) -->
 
-<figure>
-<a><img src="{{site.url}}/assert/trilinearattention.png"></a>
-</figure>
+
 
 原图经过resnet18提取特征后，对 C * H * W 维度大小的特征进行三线性注意力提取。
 等同于双线性处理后再右乘一次特征，最后出的的特征维度仍然为 C * H * W 。
@@ -109,4 +108,4 @@ part网络的的fc输出经过带T的‘softmax’激活作为master的一个标
 
 
 
-[原文链接《Learning Trilinear Attention SamplingNetwork for Fine-grained Image Recognition》](http://openaccess.thecvf.com/content_CVPR_2019/papers/Zheng_Looking_for_the_Devil_in_the_Details_Learning_Trilinear_Attention_CVPR_2019_paper.pdf)
+[原文链接《Learning Trilinear Attention SamplingNetwork for Fine-grained Image Recognition》](https://arxiv.org/pdf/1808.02152.pdf)
