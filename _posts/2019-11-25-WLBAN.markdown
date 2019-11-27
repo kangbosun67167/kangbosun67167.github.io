@@ -76,13 +76,65 @@ $$ B = XA^T $$
 
 
 
-**Attention Sampling**
+**Attention Cropping**
 
 从InceptionV3的某一层获取卷积层输出，使用1*1卷积获取attention图。
 
 将attention按照通道维度平均池化，获得总的全局attention图。根据全局attention图裁剪得到目标图。
 
 裁剪的方法参见论文[《Learning deep features for discriminative localization》](https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Zhou_Learning_Deep_Features_CVPR_2016_paper.pdf)
+
+
+裁剪的理解：attention图的按照最大连通域裁剪
+
+做法，取最大值的20%为阈值，计算最大连通域，裁剪最大连通域的矩形框。
+
+参考做法
+
+
+    import cv2
+    import os
+    import numpy as np
+
+    from skimage.morphology import label
+    from skimage.measure import regionprops
+
+
+    img_path = '/root/skb/inception_bili/images.jpg'
+
+    img = cv2.imread(img_path,0)
+
+    print(img.max())
+
+
+
+    max_value = np.max(img)
+
+
+
+    ret, ee = cv2.threshold(img, 0.8*max_value, max_value, cv2.THRESH_BINARY)
+
+    cv2.imwrite('/root/skb/inception_bili/ee.png',ee)
+
+    labeled_img, num = label(ee, neighbors=4, background=0, return_num=True)
+
+    # minr, minc, maxr, maxc = regionprops(labeled_img)[max_label].bbox
+
+    max_area = -1
+    for region in regionprops(labeled_img):
+        # skip small images
+        if region.area < 50:
+            continue
+        if region.area > max_area:
+        #print(regionprops(labeled_img)[max_label])
+            max_area = region.area
+            minr, minc, maxr, maxc = region.bbox
+
+    crop_img = img[minr:maxr,minc:maxc]
+    cv2.imwrite('/root/skb/inception_bili/crop.png',crop_img)
+
+    print(ret,ee)
+
 
 
 
