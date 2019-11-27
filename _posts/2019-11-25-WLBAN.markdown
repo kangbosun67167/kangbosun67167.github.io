@@ -142,17 +142,14 @@ $$ B = XA^T $$
 
 **loss设计**
 
-part网络的的fc输出经过带T的‘softmax’激活作为master的一个标签（用作知识蒸馏）。
-
-最后master网络同时使用类别交叉熵和与part网络输出的交叉熵，part网络使用类别交叉熵训练。
-
+两阶段的图像分类loss和attention图的中心loss
 
 ## **RESULT**
 
 <!-- ![result](assert/result.png) -->
 
 <figure>
-<a><img src="{{site.url}}/assert/tasn_result.png"></a>
+<a><img src="{{site.url}}/assert/wsban_result.png"></a>
 </figure>
 
 
