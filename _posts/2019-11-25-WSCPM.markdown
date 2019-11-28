@@ -1,6 +1,6 @@
 ---
 layout: article
-title:  "细粒度识别论文阅读《Weakly Supervised Bilinear Attention Network for Fine-Grained Visual Classification》"
+title:  "细粒度识别论文阅读《Weakly Supervised Complementary Parts Models for Fine-Grained Image Classification from the Bottom Up》"
 date:   2019-11-21 09:53:48 +0000
 tags: Fine-grained
 mathjax: true
@@ -20,35 +20,28 @@ mathjax_autoNumber: true
 
 <!-- 细粒度的识别难点在于网络很难从一个固定分辨率大小的图中自适应的找到合适分类的纹理特征，该论文通过放大图像中的纹理特征以期望获得网络的关注（在分类上更有权重）。 -->
 
-细粒度识别领域常常采用弱监督信息进行目标定位，然而误检和遮挡会导致目标定位发生较大的偏差，一定程度上引起推断的波动性（即学习过程不稳定）和损害准确率的增长。
-作者从attention角度出发，对特征图进行attention量化，实现另一种形式的目标定位，two-stage的方式进一步提取裁剪图片的特征进行联合分类。
-
-
-
-
+图像分类任务往往关注最具有辨别特征的区域，而对其他有信息量的区域的关注度不够。
+在细粒度图像识别任务中，最具判别性的区域往往对于分类信息是不足的。
+该文章提取使用弱监督的下的目标定位进行数据集增强，提出stack lstm进行多图的特征融合，大幅地提高了细粒度的识别准确率。
 
 
 
 ## 难点
 
-1. attention图如何产生？
-2. 特征图和attention图搭配使用？
-3. 如何使用attention图进行裁剪？  
-<!-- 3. 如何？ -->
+1. 如何进行目标定位？
+2. 如何进行辅助图像的利用？
 
 
 ## 方法
 
 ### 网络总览
 
-1. 原图经过InceptionV3特征提取产生特征图，其中使用1*1卷积产生attention图(128维度)，将attention图和特征图进行bilinear汇合，称之为bilinear attention pooling（BAP）。最后进行提取出相应的特征。
-2. attention图进行通道间的平均加权，使用论文[《Learning deep features for discriminative localization》](https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Zhou_Learning_Deep_Features_CVPR_2016_paper.pdf)
-中的方法进行裁剪，得到目标裁剪图。
-3. 裁剪图如1中的过程得到特征，最后与原图特征联合分类。
+1. 使用标签信息进行目标定位，使用mask-rcnn的方式，提取目标的多个候选框。
+2. 使用搭建的CNN + Stack LSTM，提取并融合多图的特征。
 
 
 <figure>
-<a><img src="{{site.url}}/assert/wsban_all.png"></a>
+<a><img src="{{site.url}}/assert/wscpm_all.png"></a>
 </figure>
 <!-- As an analogy [15] to natural language processing, shuffling
 words in a sentence would force the neural network to focus
