@@ -69,6 +69,10 @@ $$ B = XA^T $$
 所以得到$$B$$的shape为$$(N,M)$$。
 
 
+$$ \ell(x, y) = L = \{l_1,\dots,l_N\}^\top , \quad$$
+
+$$l_n = \left( x_n - y_n \right)^2 $$
+
 
 <!-- $$a=\frac{1}{1+sin(x)}$$ -->
 
