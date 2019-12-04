@@ -66,6 +66,8 @@ network would be forced to learn from discriminative region details for classifi
 
 $$ B = XA^T $$
 
+$$ B(x|y) = XA^T $$
+
 所以得到$$B$$的shape为$$(N,M)$$。
 
 <!-- 
