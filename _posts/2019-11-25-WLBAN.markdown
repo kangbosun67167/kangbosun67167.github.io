@@ -59,14 +59,14 @@ network would be forced to learn from discriminative region details for classifi
 
 <!-- ![navigate](assert/navigate.png) -->
 
-就是一般的bilinear pooling，两流的输入，一流为特征图，另一流为attention图。
+就是一般的bilinear pooling，两流的输入，一流为特征图，$$ B(x|y) = XA^T $$另一流为attention图。
 
 设 $$ X = N * H * W  -> reshape -> X = N * HW $$, $$ A = M * H * W -> reshape -> A = M * HW $$，
 则bilinear输出定义为：
 
 $$ B = XA^T $$
 
-$$ B(x|y) = XA^T $$
+
 
 所以得到$$B$$的shape为$$(N,M)$$。
 
