@@ -151,6 +151,9 @@ $$l_n = \left( x_n - y_n \right)^2 $$ -->
 
 两阶段的图像分类loss和attention图的中心loss
 
+center loss 理解，
+对每一个类别分别有个M个part中心，期望网络能够靠近数据中心
+
 ## **RESULT**
 
 <!-- ![result](assert/result.png) -->
@@ -162,3 +165,5 @@ $$l_n = \left( x_n - y_n \right)^2 $$ -->
 
 
 [原文链接《Weakly Supervised Bilinear Attention Network for Fine-Grained Visual Classification》](https://arxiv.org/pdf/1808.02152.pdf)
+[原文链接《See Better Before Looking Closer: Weakly Supervised Data Augmentation Network for Fine-Grained Visual Classification》](https://arxiv.org/pdf/1901.09891.pdf)
+<!-- https://arxiv.org/pdf/1901.09891.pdf -->
