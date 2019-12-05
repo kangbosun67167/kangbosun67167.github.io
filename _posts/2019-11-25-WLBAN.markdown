@@ -165,5 +165,6 @@ center loss 理解，
 
 
 [原文链接《Weakly Supervised Bilinear Attention Network for Fine-Grained Visual Classification》](https://arxiv.org/pdf/1808.02152.pdf)
+
 [原文链接《See Better Before Looking Closer: Weakly Supervised Data Augmentation Network for Fine-Grained Visual Classification》](https://arxiv.org/pdf/1901.09891.pdf)
 <!-- https://arxiv.org/pdf/1901.09891.pdf -->
