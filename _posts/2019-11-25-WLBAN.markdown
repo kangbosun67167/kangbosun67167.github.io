@@ -154,7 +154,7 @@ $$l_n = \left( x_n - y_n \right)^2 $$ -->
 center loss 理解，
 对每一个类别分别有个M个part中心，期望网络能够靠近数据中心
 
-$$ \Delta  $$
+$$ \Delta H $$
 
 ## **RESULT**
 
