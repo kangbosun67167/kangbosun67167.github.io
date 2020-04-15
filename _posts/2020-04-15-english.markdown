@@ -1,0 +1,120 @@
+---
+layout: article
+title:  "English"
+date:   2020-04-15 21:15:48 +0000
+tags: English
+---
+
+# 1
+Hello everyone, I am Kangbo Sun, a PHd. student from Shanghai Jiaotong University, and I am honored to show you our work "Spatial Attentional Bilinear 3d Convolutional Network for Video-based Autism Spectrum Disorder Detection", this work was completed by Kangbo Sun, Lin Li, Lianqiang Li, Ningyu He and Jie Zhu.
+
+# 2
+First of all, let me show you our introduction.
+
+# 3
+Autism is a behavioral neurological disorder affecting a significant percentage of worldwide population. It especially starts at very low ages. Unfortunately, so far no blood tests, brain image scans or other medical diagnostic methods are available for detection of ASD. In other words, the clinical diagnosis of autism can only be carried out through behavioral observation.
+
+Generally, autism occurs before the age of three. After children over the age of five, it generally has little meaning for the treatment of autism.
+
+Therefore, early detection of ASD is an very important step in the treatment of children with ASD. 
+
+
+However, there are very few medical experts associated with autism, and screening for autism is a job that requires expertise and experience. The large-scale screening of autism is costly and almost impossible. 
+
+# 4
+The development of deep learning and computer vision makes AI based screening of ASD possible.
+Internationally, it is often to diagnose ASD by judging actions.
+
+Recently, Zunino(sunino) et al.  proposed a grabbing bottle dataset performed by ASD and TD children.
+Medical research shows that at the moment of grabbing a bottle, there is a difference in the performance of Typically Developing children and ASD children. 
+It means that we can classify whether actions are performed by a TD or an ASD child, by only processing the part of video data.
+
+In addition, Tian et al.  also proposed an action dataset named ASD40h.
+
+Thanks to their work, ASD detection technology based on deep learning has some datasets to verify.
+
+# 5
+However, The actions of Typically Developing children and ASD children have similar patterns, which are difficult to be distinguished. 
+Without specific knowledge, it could be a challenging task even for human beings. 
+In the video classification tasks, Most deep learning networks classify videos in clip-level, which may lose essential action details.
+Therefore,  video-based detection of ASD is a huge challenge for the most mainstream neural network models like C3D and Two-stream networks. 
+
+So, How to effectively extract the fine-grained differences in video-level has become the most important issue in video-based ASD detection.
+
+# 6
+And the next, I will show you our solution for video-based ASD detection.
+
+# 7
+Lin et al. adopted bilinear pooling before the fully connected layers and achieved remarkable improvements on fine-grained visual recognition. 
+
+This method is designed to extract the second-order information of the features extracted by CNNs, and bp can extract the information between channels in pairs, which greatly increases the information for classification.
+
+As is shown in the fig.1, bilinear pooling is a feature fusion method to fuse the features produced by CNNs.
+In our work, only one convolutional network is used, 
+F is the feature produced by the convolutional network.
+And the bilinear feature is defined as Equ.1.
+In general, the number of channels of feature F is much larger than its space size.
+As a result, The second-order feature B is much larger than the original feature F, which brings more classification information.
+
+# 8
+For each element in B, it can be obtained by averaging the matrix dot product results of the feature maps on  two channels.
+
+However, the average pooling in the bilinear pooling method does not consider the imbalance of spatial information distribution, which will cause the network to lose spatial information to a certain extent.
+
+To enable the network to focus on more discriminative regions, we introduce spatial weights.
+And we use the attention mechanism to dynamically generate this weight in video processing
+
+# 9
+In fine-grained video recognition task, discriminative information in video tends to exist in a small timing range. The preprocessing method of frame extraction may greatly hurt discriminative information. Besides, the increasing of parameters caused by 3D convolution limits the number of frames in each clip. To address this issue, we use the LSTM network to extract the information of descriptor produced by SA-B3D network with clips as input.
+
+And the overview of our network is shown in the fig3.
+
+# 10
+In order to ensure that the weight matrix effectively and dynamically finds more discriminative regions, we designed a 3D network + LSTM structure to build a video-level recognition network.
+
+First, we use a 3D convolutional network to extract the spatiotemporal features of the clips,
+Then Spatial attentional bilinear pooling is used to enhance the spatiotemporal features.
+We use a two-layer fully connected network to generate spatial attention weights.
+
+In the spatial attention module, to make the spatial attention change dynamically, we also take the original feature and the previous hidden state of LSTM as input to generate attention weight。
+
+# 11
+Next, I will show our experimental results
+
+# 12
+In our work ,wo conduct experiment on the grabbing bottle dataset. The dataset include 1820 grabing video perform by 20 TD and 20 ASD children.           
+
+In the five-fold testing method, the BP method improves the average accuracy and detection accuracy by an average of 7%, and the spatial attention mechanism increases by about 4% based on Bilinear pooling.
+
+In the one-subject-out testing method, the BP method improves the average accuracy and detection accuracy by an average of about 4%, and the spatial attention mechanism increases by about 5% based on Bilinear pooling.
+
+
+
+The proposed SA-B3D model achieves remarkable performance with both evaluation methods.
+
+# 13
+In order to better understand the attention mechanism and bilinear pooling, we visualize the features captured by the C3D, B3D and SA-B3D using the T-sne method in the fig.5.  
+
+The T-Sne method project high-dimensional features in two dimensions to observe the distribution
+
+The features extracted by the SA-B3D model have larger inter-class distances and smaller intra-class distances, which means that the features can be distinguished more easily.
+
+
+
+
+# 14
+In addition, we also visualized the result of our spatial attention mechanism and use the middle image of each clip as the background. As shown in Fig, the brightness in each image represents the attentional degree on different regions. It can be seen that our spatial attentional mechanism effectively and dynamically focuses on the most discriminative areas of the video, i.e., usually the bottle and movement of the hand.
+
+
+# 15
+The final section is our summary.
+
+# 16
+we adopt an attention mechanism to build spatial attentional bilinear pooling, which, to a certain extent, overcomes the weakness of bilinear pooling in extracting spatial information without significantly increasing the parameters.
+And we propose a video-level network for ASD detection, our model outperforms our C3D baseline and other methods with a lager margin.
+
+# 17
+Thank you for your listening.
+
+
+
